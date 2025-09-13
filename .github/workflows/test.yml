@@ -22,7 +22,24 @@ jobs:
     - name: Run Tests
       shell: pwsh
       run: |
-        Invoke-Pester -Script SwmfsMonitor.Tests.ps1 -OutputFormat NUnitXml -OutputFile TestResults.xml
+        $config = New-PesterConfiguration
+        $config.Run.Path = 'SwmfsMonitor.Tests.ps1'
+        $config.TestResult.Enabled = $true
+        $config.TestResult.OutputFormat = 'NUnitXml'
+        $config.TestResult.OutputPath = 'TestResults.xml'
+        $config.Output.Verbosity = 'Detailed'
+        Invoke-Pester -Configuration $config
+        
+    - name: Check if test results exist
+      shell: pwsh
+      run: |
+        if (Test-Path "TestResults.xml") {
+          Write-Host "Test results file found"
+          Get-Content "TestResults.xml" | Select-Object -First 10
+        } else {
+          Write-Host "Test results file not found"
+          exit 1
+        }
         
     - name: Publish Test Results
       uses: dorny/test-reporter@v2
@@ -30,5 +47,5 @@ jobs:
       with:
         name: PowerShell Tests
         path: TestResults.xml
-        reporter: java-junit
+        reporter: dotnet-nunit
         fail-on-error: true
