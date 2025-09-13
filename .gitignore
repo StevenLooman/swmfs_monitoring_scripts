@@ -1,0 +1,143 @@
+# PowerShell specific files
+*.ps1xml
+$profile
+*.pssc
+
+# PowerShell session history
+ConsoleHost_history.txt
+
+# PowerShell test results
+TestResults.xml
+TestResult.xml
+*.trx
+
+# Pester test output
+TestResults/
+coverage.xml
+coverage/
+
+# PowerShell Gallery package files
+*.nupkg
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# Build output
+bin/
+obj/
+Debug/
+Release/
+x64/
+x86/
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+
+# Log files
+*.log
+logs/
+*.log.*
+
+# Temporary files
+*.tmp
+*.temp
+*~
+.#*
+
+# OS generated files
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# Node.js (if using any JS tooling)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Local configuration files
+config.local.*
+settings.local.*
+
+# SWMFS specific (monitoring output files)
+swmfs_monitor_output.txt
+monitor_*.log
+swmfs_stats_*.csv
+
+# Archive files
+*.zip
+*.tar.gz
+*.7z
+*.rar
+
+# Package manager lock files (if using any)
+package-lock.json
+yarn.lock
+
+# JetBrains
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+\#*\#
+.\#*
+
+# Local development tools
+.devcontainer/
+docker-compose.override.yml

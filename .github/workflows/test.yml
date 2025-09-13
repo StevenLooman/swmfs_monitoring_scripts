@@ -1,0 +1,34 @@
+name: Run PowerShell Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+        
+    - name: Install Pester
+      shell: pwsh
+      run: |
+        Install-Module -Name Pester -Force -Scope CurrentUser -SkipPublisherCheck -RequiredVersion 5.5.0
+        
+    - name: Run Tests
+      shell: pwsh
+      run: |
+        Invoke-Pester -Script SwmfsMonitor.Tests.ps1 -OutputFormat NUnitXml -OutputFile TestResults.xml
+        
+    - name: Publish Test Results
+      uses: dorny/test-reporter@v1
+      if: success() || failure()
+      with:
+        name: PowerShell Tests
+        path: TestResults.xml
+        reporter: dotnet-nunit
+        fail-on-error: true
