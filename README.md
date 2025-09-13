@@ -1,6 +1,6 @@
 # SWMFS Monitoring Scripts
 
-A PowerShell module for parsing and working with SWMFS (Shared Working Memory File System) monitoring statistics on Windows and Linux platforms.
+A PowerShell module for parsing and working with SWMFS (Smallworld Master File System) monitoring statistics on Windows and Linux platforms.
 
 ## Overview
 
