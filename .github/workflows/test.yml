@@ -25,10 +25,10 @@ jobs:
         Invoke-Pester -Script SwmfsMonitor.Tests.ps1 -OutputFormat NUnitXml -OutputFile TestResults.xml
         
     - name: Publish Test Results
-      uses: dorny/test-reporter@v1
+      uses: dorny/test-reporter@v2
       if: success() || failure()
       with:
         name: PowerShell Tests
         path: TestResults.xml
-        reporter: dotnet-nunit
+        reporter: java-junit
         fail-on-error: true
