@@ -20,7 +20,7 @@ function Get-SwmfsMonitorStats {
         }
     }
 
-    if ($RawOutput) {
+    if ($PSBoundParameters.ContainsKey('RawOutput')) {
         $output = $RawOutput
     } else {
         $output = & $ExecutablePath $InstanceName
@@ -145,7 +145,7 @@ function Get-SwmfsLockMonitorStats {
         }
     }
 
-    if ($RawOutput) {
+    if ($PSBoundParameters.ContainsKey('RawOutput')) {
         $output = $RawOutput
     } else {
         $args = @()
@@ -217,14 +217,6 @@ function Get-SwmfsLockMonitorStats {
                 $currentFile.Locks += $currentLock
             }
         }
-        # Parse continuation line for users: "                     hatebea5@bideford ilkdbc70@halstead"
-        elseif ($line -match '^\s{20,}(.+)' -and $currentLock -and -not ($line -match '^\s*Queued\s')) {
-            $usersText = $matches[1].Trim()
-            if ($usersText) {
-                $additionalUsers = $usersText -split '\s+' | Where-Object { $_ }
-                $currentLock.Holders += $additionalUsers
-            }
-        }
         # Parse queued users line: "         Queued      cleaa63@coleford"
         elseif ($line -match '^\s*Queued\s+(.+)') {
             if ($currentLock) {
@@ -241,6 +233,14 @@ function Get-SwmfsLockMonitorStats {
             if ($queuedUsersText) {
                 $additionalQueuedUsers = $queuedUsersText -split '\s+' | Where-Object { $_ }
                 $currentLock.QueuedUsers += $additionalQueuedUsers
+            }
+        }
+        # Parse continuation line for users: "                     hatebea5@bideford ilkdbc70@halstead"
+        elseif ($line -match '^\s{20,}(.+)' -and $currentLock) {
+            $usersText = $matches[1].Trim()
+            if ($usersText) {
+                $additionalUsers = $usersText -split '\s+' | Where-Object { $_ }
+                $currentLock.Holders += $additionalUsers
             }
         }
         
@@ -279,7 +279,7 @@ function Get-SwmfsListStats {
         }
     }
 
-    if ($RawOutput) {
+    if ($PSBoundParameters.ContainsKey('RawOutput')) {
         $output = $RawOutput
     } else {
         $args = @("-post_process")
@@ -312,7 +312,7 @@ function Get-SwmfsListStats {
         if ($line -match '^(Windows|Linux)\s+server\s+(.+?),\s+Universal\s+time\s+(.+)\.$') {
             $result.ServerName = $matches[2].Trim()
             $result.ServerTime = try { 
-                [DateTime]::Parse($matches[3]) 
+                [DateTime]::ParseExact($matches[3], "ddd MMM dd HH:mm:ss yyyy", [System.Globalization.CultureInfo]::InvariantCulture)
             } catch { 
                 $matches[3] 
             }
