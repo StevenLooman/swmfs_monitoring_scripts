@@ -232,7 +232,33 @@ Describe "Get-SwmfsLockMonitorStats" {
             $result1.Count | Should -Be 3
             
             $result2 = Get-SwmfsLockMonitorStats -ExecutablePath "swmfs_lock_monitor" -RawOutput $mockSimpleOutput
-                        $result2.Count | Should -Be 3
+            $result2.Count | Should -Be 3
+        }
+    }
+
+    Context "Edge cases" {
+        It "Handles empty output" {
+            $result = Get-SwmfsLockMonitorStats -RawOutput @()
+            $result.Count | Should -Be 0
+        }
+
+        It "Handles files with only header and no locks" {
+            $emptyFileOutput = @("File: \\server\path\file.ds Number of locks: 0")
+            $result = Get-SwmfsLockMonitorStats -RawOutput $emptyFileOutput
+            $result.Count | Should -Be 1
+            $result[0].NumberOfLocks | Should -Be 0
+            $result[0].Locks.Count | Should -Be 0
+        }
+
+        It "Handles locks with no users listed" {
+            $noUsersOutput = @(
+                "File: \\server\path\file.ds Number of locks: 1",
+                "  12345 X    0    0"
+            )
+            $result = Get-SwmfsLockMonitorStats -RawOutput $noUsersOutput
+            $result.Count | Should -Be 1
+            $result[0].Locks[0].Holders.Count | Should -Be 0
+            $result[0].Locks[0].QueuedUsers.Count | Should -Be 0
         }
     }
 }
@@ -461,33 +487,6 @@ Describe "Get-SwmfsListStats" {
             $client.ClientName | Should -BeOfType [string]
             $client.Status | Should -BeOfType [string]
             $result.Files[0].FilePath | Should -BeOfType [string]
-        }
-    }
-}
-
-    Context "Edge cases" {
-        It "Handles empty output" {
-            $result = Get-SwmfsLockMonitorStats -RawOutput @()
-            $result.Count | Should -Be 0
-        }
-
-        It "Handles files with only header and no locks" {
-            $emptyFileOutput = @("File: \\server\path\file.ds Number of locks: 0")
-            $result = Get-SwmfsLockMonitorStats -RawOutput $emptyFileOutput
-            $result.Count | Should -Be 1
-            $result[0].NumberOfLocks | Should -Be 0
-            $result[0].Locks.Count | Should -Be 0
-        }
-
-        It "Handles locks with no users listed" {
-            $noUsersOutput = @(
-                "File: \\server\path\file.ds Number of locks: 1",
-                "  12345 X    0    0"
-            )
-            $result = Get-SwmfsLockMonitorStats -RawOutput $noUsersOutput
-            $result.Count | Should -Be 1
-            $result[0].Locks[0].Holders.Count | Should -Be 0
-            $result[0].Locks[0].QueuedUsers.Count | Should -Be 0
         }
     }
 }
