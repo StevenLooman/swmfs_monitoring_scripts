@@ -1,28 +1,31 @@
 # SWMFS Monitoring Scripts
 
-A PowerShell module for parsing and working with SWMFS (Smallworld Master File System) monitoring statistics on Windows and Linux platforms.
+A PowerShell module for parsing and working with SWMFS (Smallworld Master File System) monitoring utilities on Windows and Linux platforms.
 
 ## Overview
 
-This repository contains PowerShell scripts that provide an interface to parse output from the `swmfs_monitor` utility (available as `swmfs_monitor.exe` on Windows and `swmfs_monitor` on Linux). The module extracts structured data from the monitoring output, making it easier to analyze SWMFS performance metrics programmatically across different operating systems.
+This repository contains PowerShell scripts that provide an interface to parse output from various SWMFS monitoring utilities. The module extracts structured data from the monitoring output, making it easier to analyze SWMFS performance metrics and file usage programmatically across different operating systems.
 
 ## Features
 
 - **Cross-Platform Support**: Works on both Windows and Linux platforms with automatic executable detection
-- **Structured Data Parsing**: Converts raw `swmfs_monitor` output into structured PowerShell objects
+- **Multiple Utility Support**: Parses output from `swmfs_monitor`, `swmfs_lock_monitor`, and `swmfs_list`
+- **Structured Data Parsing**: Converts raw utility output into structured PowerShell objects
 - **Comprehensive Metrics**: Extracts all major SWMFS statistics including:
-  - Runtime statistics (elapsed time)
+  - Runtime and performance statistics
   - Client connection metrics
   - File operation counters
+  - Lock monitoring information
+  - File usage and client details
   - I/O operation statistics
   - Thread pool information
   - Network communication metrics
-  - Recovery and reconnection statistics
 
 ## Files
 
-- `SwmfsMonitor.psm1` - Main PowerShell module containing the `Get-SwmfsMonitorStats` function
+- `SwmfsMonitor.psm1` - Main PowerShell module containing the monitoring functions
 - `SwmfsMonitor.Tests.ps1` - Pester tests for validating the module functionality
+- `Get-SwmfsListStats-Examples.md` - Detailed examples for the swmfs_list integration
 - `README.md` - This documentation file
 
 ## Installation
@@ -34,13 +37,57 @@ This repository contains PowerShell scripts that provide an interface to parse o
 Import-Module "./SwmfsMonitor.psm1"
 ```
 
-## Usage
+## Available Functions
 
-### Basic Usage
+### Get-SwmfsMonitorStats
+
+Parses output from the `swmfs_monitor` utility to extract server performance statistics.
+
+### Get-SwmfsLockMonitorStats
+
+Parses output from the `swmfs_lock_monitor` utility to extract file locking information.
+
+### Get-SwmfsListStats
+
+Parses output from the `swmfs_list -post_process` utility to extract file usage and client connection details.
+
+## Module Installation
+
+1. Clone or download this repository
+2. Import the module in your PowerShell session:
+
+```powershell
+Import-Module "./SwmfsMonitor.psm1"
+```
+
+## Usage Examples
+
+### swmfs_monitor Statistics
 
 ```powershell
 # Get statistics for a specific SWMFS instance
 $stats = Get-SwmfsMonitorStats -InstanceName "dbserver"
+```
+
+### Lock Monitoring
+
+```powershell
+# Get lock information for a server
+$locks = Get-SwmfsLockMonitorStats -ServerOrDirectory "dbserver"
+
+# Get lock information for a specific file
+$locks = Get-SwmfsLockMonitorStats -ServerOrDirectory "/data/gis" -File "raster.ds"
+```
+
+### File Usage and Client Information
+
+```powershell
+# Get file usage statistics with client details
+$usage = Get-SwmfsListStats -ServerOrHost "dbserver"
+
+# Parse pre-captured output
+$rawOutput = & swmfs_list -post_process dbserver
+$usage = Get-SwmfsListStats -RawOutput $rawOutput
 ```
 
 ### Advanced Usage
