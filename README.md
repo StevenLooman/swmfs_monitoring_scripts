@@ -6,6 +6,8 @@ A PowerShell module for parsing and working with SWMFS (Smallworld Master File S
 
 This repository contains PowerShell scripts that provide an interface to parse output from various SWMFS monitoring utilities. The module extracts structured data from the monitoring output, making it easier to analyze SWMFS performance metrics and file usage programmatically across different operating systems.
 
+**Note**: This project is vibe coded - developed with an intuitive, flow-based approach focused on getting things working effectively.
+
 ## Features
 
 - **Cross-Platform Support**: Works on both Windows and Linux platforms with automatic executable detection
